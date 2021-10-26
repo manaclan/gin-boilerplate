@@ -1,4 +1,4 @@
-package services
+package users
 
 import (
 	"context"
@@ -6,7 +6,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/manaclan/gin-boilerplate/src/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -17,7 +16,7 @@ type Services struct {
 
 func (services Services) RegisterUser(username string, password string) (code int, message string) {
 	fmt.Println("Service: RegisterUser")
-	var users []models.User
+	var users []User
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 	currentUsersCollection := services.Client.Database("users").Collection("current-users")
@@ -35,8 +34,8 @@ func (services Services) RegisterUser(username string, password string) (code in
 	if len(users) > 0 {
 		return 404, "User existed!"
 	}
-	newUser := models.User{Username: username, Password: password}
-	newUser.Password, err = models.Hash(newUser.Password)
+	newUser := User{Username: username, Password: password}
+	newUser.Password, err = Hash(newUser.Password)
 	if err != nil {
 		panic(err)
 	}
@@ -52,7 +51,7 @@ func (services Services) RegisterUser(username string, password string) (code in
 }
 func (services Services) ValidateUser(username string, password string) bool {
 	fmt.Println("Service: ValidateUser")
-	var users []models.User
+	var users []User
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 	currentUsersCollection := services.Client.Database("users").Collection("current-users")
@@ -69,6 +68,6 @@ func (services Services) ValidateUser(username string, password string) bool {
 	if len(users) == 0 {
 		return false
 	}
-	err = models.CheckPasswordHash(users[0].Password, password)
+	err = CheckPasswordHash(users[0].Password, password)
 	return err == nil
 }

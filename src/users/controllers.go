@@ -1,14 +1,13 @@
-package controllers
+package users
 
 import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	services "github.com/manaclan/gin-boilerplate/src/2-services"
 )
 
 type Controllers struct {
-	Services services.Services
+	Services Services
 }
 
 /*
