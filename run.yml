@@ -1,0 +1,9 @@
+services:
+  server:
+    build: 
+      context: ./
+      dockerfile: Dockerfile
+    image: go_service
+    ports:
+      - 8525:8525
+    restart: unless-stopped

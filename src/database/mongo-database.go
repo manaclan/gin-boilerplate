@@ -9,7 +9,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func ConnectDatabase() *mongo.Client {
+var DB *mongo.Client
+
+func Init() *mongo.Client {
 	clientOptions := options.Client().ApplyURI(os.Getenv("MONGODB_URI"))
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 
@@ -23,5 +25,6 @@ func ConnectDatabase() *mongo.Client {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return client
+	DB = client
+	return DB
 }

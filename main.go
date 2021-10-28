@@ -6,9 +6,8 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	controllers "github.com/manaclan/gin-boilerplate/src/1-controllers"
-	services "github.com/manaclan/gin-boilerplate/src/2-services"
 	"github.com/manaclan/gin-boilerplate/src/database"
+	"github.com/manaclan/gin-boilerplate/src/users"
 )
 
 func main() {
@@ -16,10 +15,13 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error getting env, %v", err)
 	}
-	client := database.ConnectDatabase()
-	servc := services.Services{Client: client}
-	ctrler := controllers.Controllers{Services: servc}
+	database.Init()
 	r := gin.Default()
+
+	usersRouteGroup := r.Group("/users")
+	usersRouter := users.UsersRouter{}
+	usersRouter.Init()
+	usersRouter.Route(usersRouteGroup)
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"*"},
@@ -27,7 +29,5 @@ func main() {
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
-	r.POST("/login", ctrler.Login)
-	r.POST("/register", ctrler.Register)
 	r.Run(":8525")
 }
