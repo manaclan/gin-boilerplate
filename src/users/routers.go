@@ -10,7 +10,7 @@ type UsersRouter struct {
 	Controllers Controllers
 }
 
-func (router UsersRouter) Init() {
+func (router *UsersRouter) Init() {
 	router.Services = Services{Client: database.DB}
 	router.Controllers = Controllers{Services: router.Services}
 }
